@@ -2,95 +2,83 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* 🎨 Financial Dashboard Design System - Dark Mode with Neon Accents */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
+    /* Core Dark Background System */
+    --background: 222 12% 7%;
+    --foreground: 210 40% 96%;
+    
+    /* Card System with Subtle Gradients */
+    --card: 222 20% 9%;
+    --card-foreground: 210 40% 96%;
+    --card-border: 220 25% 15%;
+    
+    /* Popover & Modal System */
+    --popover: 224 20% 8%;
+    --popover-foreground: 210 40% 96%;
+    
+    /* Neon Accent System */
+    --primary: 186 100% 50%; /* Neon Cyan */
+    --primary-foreground: 222 12% 7%;
+    --primary-glow: 186 100% 65%;
+    
+    /* Secondary Emerald Accent */
+    --secondary: 166 100% 50%; /* Neon Emerald */
+    --secondary-foreground: 222 12% 7%;
+    --secondary-glow: 166 100% 65%;
+    
+    /* Muted States */
+    --muted: 220 25% 15%;
+    --muted-foreground: 215 20% 65%;
+    
+    /* Interactive Elements */
+    --accent: 186 85% 45%;
+    --accent-foreground: 210 40% 96%;
+    
+    /* Status Colors */
+    --success: 142 100% 50%;
+    --warning: 45 100% 60%;
+    --destructive: 0 85% 60%;
     --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    
+    /* Form Elements */
+    --border: 220 25% 18%;
+    --input: 222 20% 12%;
+    --ring: 186 100% 50%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(186 100% 50%), hsl(166 100% 50%));
+    --gradient-card: linear-gradient(145deg, hsl(222 20% 9%), hsl(220 25% 11%));
+    --gradient-sidebar: linear-gradient(180deg, hsl(222 25% 8%), hsl(222 20% 6%));
+    
+    /* Shadows & Glows */
+    --shadow-glow: 0 0 30px hsl(186 100% 50% / 0.3);
+    --shadow-card: 0 4px 24px hsl(222 50% 4% / 0.5);
+    --shadow-sidebar: 4px 0 24px hsl(222 50% 4% / 0.3);
+    
+    /* Radius */
+    --radius: 0.75rem;
+    --radius-lg: 1rem;
+    
+    /* Sidebar System */
+    --sidebar-background: 222 25% 8%;
+    --sidebar-foreground: 210 25% 85%;
+    --sidebar-primary: 186 100% 50%;
+    --sidebar-primary-foreground: 222 12% 7%;
+    --sidebar-accent: 220 25% 12%;
+    --sidebar-accent-foreground: 210 25% 85%;
+    --sidebar-border: 220 25% 15%;
+    --sidebar-ring: 186 100% 50%;
+    
+    /* Typography Scale */
+    --font-display: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    
+    /* Animation Timing */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   }
 }
 
@@ -100,6 +88,24 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Enhanced scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-muted/30;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
   }
 }
