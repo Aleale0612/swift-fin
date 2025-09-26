@@ -25,20 +25,40 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <DashboardLayout />
-                </ProtectedRoute>
-              }>
+              {/* Public route */}
+              <Route
+                path="/auth"
+                element={
+                  <ProtectedRoute requireAuth={false}>
+                    <Auth />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Protected routes */}
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <DashboardLayout />
+                  </ProtectedRoute>
+                }
+              >
                 <Route index element={<Dashboard />} />
                 <Route path="transactions" element={<Transactions />} />
                 <Route path="debts" element={<Debts />} />
                 <Route path="reports" element={<Reports />} />
-                <Route path="categories" element={<div className="p-8">Halaman Kategori (Coming Soon)</div>} />
-                <Route path="settings" element={<div className="p-8">Halaman Pengaturan (Coming Soon)</div>} />
+                <Route
+                  path="categories"
+                  element={<div className="p-8">Halaman Kategori (Coming Soon)</div>}
+                />
+                <Route
+                  path="settings"
+                  element={<div className="p-8">Halaman Pengaturan (Coming Soon)</div>}
+                />
               </Route>
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+
+              {/* Catch-all */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

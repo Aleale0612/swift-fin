@@ -1,13 +1,17 @@
-import React from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { Loader2 } from 'lucide-react';
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { Loader2 } from "lucide-react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
+  requireAuth?: boolean; // default true, kalau false = public route
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  requireAuth = true,
+}) => {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -21,8 +25,14 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
     );
   }
 
-  if (!user) {
+  if (requireAuth && !user) {
+    // butuh login tapi user nggak ada → lempar ke /auth
     return <Navigate to="/auth" replace />;
+  }
+
+  if (!requireAuth && user) {
+    // kalau halaman public (misal /auth) tapi user sudah login → redirect ke dashboard
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;

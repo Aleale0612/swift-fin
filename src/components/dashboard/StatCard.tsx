@@ -65,12 +65,16 @@ export function StatCard({
           <p className="text-sm text-muted-foreground font-medium">
             {title}
           </p>
-          <p className={cn(
-            "text-2xl font-bold",
-            gradient ? "text-primary-foreground" : "text-card-foreground"
-          )}>
-            {value}
-          </p>
+         <p
+  className={cn(
+    "text-2xl font-extrabold tracking-tight drop-shadow-sm",
+    gradient 
+      ? "bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent" 
+      : "text-foreground"
+  )}
+>
+  {value}
+</p>
         </div>
 
         {/* Additional Content */}

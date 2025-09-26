@@ -1,44 +1,64 @@
-import React, { useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useToast } from '@/hooks/use-toast';
-import { Loader2, Shield, TrendingUp } from 'lucide-react';
+import React, { useState } from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2, Shield, TrendingUp } from "lucide-react";
 
 const Auth = () => {
   const { user, signUp, signIn, loading } = useAuth();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
-  
-  // Redirect if already authenticated
+
+  // pisah loading state biar nggak bentrok signin & signup
+  const [isLoadingSignIn, setIsLoadingSignIn] = useState(false);
+  const [isLoadingSignUp, setIsLoadingSignUp] = useState(false);
+
+  // redirect kalau udah login
   if (!loading && user) {
     return <Navigate to="/" replace />;
   }
 
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    fullName: '',
+  // form states dipisah biar lebih aman
+  const [signInData, setSignInData] = useState({
+    email: "",
+    password: "",
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const [signUpData, setSignUpData] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+  });
+
+  const handleSignInChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSignInData({ ...signInData, [e.target.name]: e.target.value });
+  };
+
+  const handleSignUpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSignUpData({ ...signUpData, [e.target.name]: e.target.value });
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsLoadingSignUp(true);
 
     try {
-      const { error } = await signUp(formData.email, formData.password, formData.fullName);
-      
+      const { error } = await signUp(
+        signUpData.email,
+        signUpData.password,
+        signUpData.fullName
+      );
+
       if (error) {
         toast({
           title: "Error",
@@ -51,24 +71,24 @@ const Auth = () => {
           description: "Check your email to verify your account.",
         });
       }
-    } catch (error) {
+    } catch (err) {
       toast({
         title: "Error",
         description: "An unexpected error occurred.",
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false);
+      setIsLoadingSignUp(false);
     }
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsLoadingSignIn(true);
 
     try {
-      const { error } = await signIn(formData.email, formData.password);
-      
+      const { error } = await signIn(signInData.email, signInData.password);
+
       if (error) {
         toast({
           title: "Error",
@@ -81,14 +101,14 @@ const Auth = () => {
           description: "Successfully signed in.",
         });
       }
-    } catch (error) {
+    } catch (err) {
       toast({
         title: "Error",
         description: "An unexpected error occurred.",
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false);
+      setIsLoadingSignIn(false);
     }
   };
 
@@ -136,30 +156,31 @@ const Auth = () => {
                 <TabsTrigger value="signup">Daftar</TabsTrigger>
               </TabsList>
 
+              {/* Sign In */}
               <TabsContent value="signin" className="space-y-4">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="signin-email">Email</Label>
                     <Input
-                      id="email"
+                      id="signin-email"
                       name="email"
                       type="email"
                       placeholder="nama@email.com"
-                      value={formData.email}
-                      onChange={handleInputChange}
+                      value={signInData.email}
+                      onChange={handleSignInChange}
                       required
                       className="bg-background/50 border-muted/40"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="signin-password">Password</Label>
                     <Input
-                      id="password"
+                      id="signin-password"
                       name="password"
                       type="password"
                       placeholder="••••••••"
-                      value={formData.password}
-                      onChange={handleInputChange}
+                      value={signInData.password}
+                      onChange={handleSignInChange}
                       required
                       className="bg-background/50 border-muted/40"
                     />
@@ -167,20 +188,21 @@ const Auth = () => {
                   <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
-                    disabled={isLoading}
+                    disabled={isLoadingSignIn}
                   >
-                    {isLoading ? (
+                    {isLoadingSignIn ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Signing in...
                       </>
                     ) : (
-                      'Masuk'
+                      "Masuk"
                     )}
                   </Button>
                 </form>
               </TabsContent>
 
+              {/* Sign Up */}
               <TabsContent value="signup" className="space-y-4">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
@@ -190,33 +212,33 @@ const Auth = () => {
                       name="fullName"
                       type="text"
                       placeholder="John Doe"
-                      value={formData.fullName}
-                      onChange={handleInputChange}
+                      value={signUpData.fullName}
+                      onChange={handleSignUpChange}
                       className="bg-background/50 border-muted/40"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
+                    <Label htmlFor="signup-email">Email</Label>
                     <Input
-                      id="email"
+                      id="signup-email"
                       name="email"
                       type="email"
                       placeholder="nama@email.com"
-                      value={formData.email}
-                      onChange={handleInputChange}
+                      value={signUpData.email}
+                      onChange={handleSignUpChange}
                       required
                       className="bg-background/50 border-muted/40"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="signup-password">Password</Label>
                     <Input
-                      id="password"
+                      id="signup-password"
                       name="password"
                       type="password"
                       placeholder="••••••••"
-                      value={formData.password}
-                      onChange={handleInputChange}
+                      value={signUpData.password}
+                      onChange={handleSignUpChange}
                       required
                       className="bg-background/50 border-muted/40"
                     />
@@ -224,15 +246,15 @@ const Auth = () => {
                   <Button
                     type="submit"
                     className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
-                    disabled={isLoading}
+                    disabled={isLoadingSignUp}
                   >
-                    {isLoading ? (
+                    {isLoadingSignUp ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Creating account...
                       </>
                     ) : (
-                      'Buat Akun'
+                      "Buat Akun"
                     )}
                   </Button>
                 </form>
