@@ -4,8 +4,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { TransactionModal } from "@/components/modals/TransactionModal";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -31,7 +44,11 @@ export default function Transactions() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
-  
+
+  // pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   useEffect(() => {
     if (user) {
       fetchTransactions();
@@ -40,6 +57,7 @@ export default function Transactions() {
 
   useEffect(() => {
     applyFilters();
+    setCurrentPage(1); // reset page saat filter berubah
   }, [transactions, searchTerm, typeFilter]);
 
   const fetchTransactions = async () => {
@@ -47,14 +65,16 @@ export default function Transactions() {
     try {
       const { data, error } = await supabase
         .from("transactions")
-        .select(`
+        .select(
+          `
           *,
           categories (
             name,
             color,
             icon
           )
-        `)
+        `
+        )
         .eq("user_id", user?.id)
         .order("date", { ascending: false });
 
@@ -71,17 +91,20 @@ export default function Transactions() {
   const applyFilters = () => {
     let filtered = transactions;
 
-    // Apply search filter
     if (searchTerm) {
-      filtered = filtered.filter(transaction =>
-        transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transaction.categories?.name.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (transaction) =>
+          transaction.description
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          transaction.categories?.name
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
       );
     }
 
-    // Apply type filter
     if (typeFilter !== "all") {
-      filtered = filtered.filter(transaction => transaction.type === typeFilter);
+      filtered = filtered.filter((transaction) => transaction.type === typeFilter);
     }
 
     setFilteredTransactions(filtered);
@@ -91,11 +114,7 @@ export default function Transactions() {
     if (!confirm("Are you sure you want to delete this transaction?")) return;
 
     try {
-      const { error } = await supabase
-        .from("transactions")
-        .delete()
-        .eq("id", id);
-
+      const { error } = await supabase.from("transactions").delete().eq("id", id);
       if (error) throw error;
       toast.success("Transaction deleted successfully");
       fetchTransactions();
@@ -122,7 +141,7 @@ export default function Transactions() {
   };
 
   const exportToCSV = () => {
-    const csvData = filteredTransactions.map(transaction => ({
+    const csvData = filteredTransactions.map((transaction) => ({
       Date: formatDate(transaction.date),
       Type: transaction.type,
       Description: transaction.description,
@@ -132,15 +151,30 @@ export default function Transactions() {
 
     const csvString = [
       Object.keys(csvData[0]).join(","),
-      ...csvData.map(row => Object.values(row).join(","))
+      ...csvData.map((row) => Object.values(row).join(",")),
     ].join("\n");
 
     const blob = new Blob([csvString], { type: "text/csv" });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `transactions_${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = `transactions_${new Date().toISOString().split("T")[0]}.csv`;
     link.click();
+  };
+
+  // pagination logic
+  const totalPages = Math.ceil(filteredTransactions.length / rowsPerPage);
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentTransactions = filteredTransactions.slice(
+    indexOfFirstRow,
+    indexOfLastRow
+  );
+
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
   return (
@@ -155,13 +189,13 @@ export default function Transactions() {
             Manage your income and expense transactions
           </p>
         </div>
-        
+
         <div className="flex gap-3">
           <Button variant="outline" onClick={exportToCSV}>
             <Download className="h-4 w-4 mr-2" />
             Export CSV
           </Button>
-          <Button 
+          <Button
             onClick={() => {
               setSelectedTransaction(null);
               setIsModalOpen(true);
@@ -195,7 +229,7 @@ export default function Transactions() {
                 />
               </div>
             </div>
-            
+
             <Select value={typeFilter} onValueChange={setTypeFilter}>
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="Filter by type" />
@@ -225,80 +259,147 @@ export default function Transactions() {
               No transactions found. Add your first transaction to get started.
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>Category</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
-                  <TableHead className="text-center">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredTransactions.map((transaction) => (
-                  <TableRow key={transaction.id}>
-                    <TableCell>{formatDate(transaction.date)}</TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant={transaction.type === "income" ? "default" : "secondary"}
-                        className={cn(
-                          transaction.type === "income" 
-                            ? "bg-success/20 text-success hover:bg-success/30" 
-                            : "bg-destructive/20 text-destructive hover:bg-destructive/30"
-                        )}
-                      >
-                        {transaction.type}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {transaction.description}
-                    </TableCell>
-                    <TableCell>
-                      {transaction.categories && (
-                        <div className="flex items-center gap-2">
-                          <div 
-                            className="w-3 h-3 rounded-full" 
-                            style={{ backgroundColor: transaction.categories.color }}
-                          />
-                          {transaction.categories.name}
-                        </div>
-                      )}
-                    </TableCell>
-                    <TableCell className={cn(
-                      "text-right font-semibold",
-                      transaction.type === "income" ? "text-success" : "text-destructive"
-                    )}>
-                      {transaction.type === "income" ? "+" : "-"}
-                      {formatCurrency(transaction.amount)}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex justify-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => {
-                            setSelectedTransaction(transaction);
-                            setIsModalOpen(true);
-                          }}
+            <>
+              <div className="max-h-[400px] overflow-y-auto border rounded-md">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Description</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead className="text-right">Amount</TableHead>
+                      <TableHead className="text-center">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {currentTransactions.map((transaction) => (
+                      <TableRow key={transaction.id}>
+                        <TableCell>{formatDate(transaction.date)}</TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              transaction.type === "income" ? "default" : "secondary"
+                            }
+                            className={cn(
+                              transaction.type === "income"
+                                ? "bg-success/20 text-success hover:bg-success/30"
+                                : "bg-destructive/20 text-destructive hover:bg-destructive/30"
+                            )}
+                          >
+                            {transaction.type}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="font-medium">
+                          {transaction.description}
+                        </TableCell>
+                        <TableCell>
+                          {transaction.categories && (
+                            <div className="flex items-center gap-2">
+                              <div
+                                className="w-3 h-3 rounded-full"
+                                style={{
+                                  backgroundColor: transaction.categories.color,
+                                }}
+                              />
+                              {transaction.categories.name}
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell
+                          className={cn(
+                            "text-right font-semibold",
+                            transaction.type === "income"
+                              ? "text-success"
+                              : "text-destructive"
+                          )}
                         >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleDelete(transaction.id)}
-                          className="text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                          {transaction.type === "income" ? "+" : "-"}
+                          {formatCurrency(transaction.amount)}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex justify-center gap-2">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => {
+                                setSelectedTransaction(transaction);
+                                setIsModalOpen(true);
+                              }}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleDelete(transaction.id)}
+                              className="text-destructive hover:text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Pagination Controls */}
+              <div className="flex items-center justify-between mt-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Rows per page:</span>
+                  <Select
+                    value={rowsPerPage.toString()}
+                    onValueChange={(val) => {
+                      setRowsPerPage(Number(val));
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <SelectTrigger className="w-20">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="5">5</SelectItem>
+                      <SelectItem value="10">10</SelectItem>
+                      <SelectItem value="50">50</SelectItem>
+                      <SelectItem value="100">100</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={currentPage === 1}
+                    onClick={() => goToPage(currentPage - 1)}
+                  >
+                    Prev
+                  </Button>
+
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <Button
+                      key={page}
+                      variant={page === currentPage ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => goToPage(page)}
+                    >
+                      {page}
+                    </Button>
+                  ))}
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={currentPage === totalPages}
+                    onClick={() => goToPage(currentPage + 1)}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>

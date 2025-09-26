@@ -61,8 +61,8 @@ export function DashboardLayout() {
           </header>
 
           {/* Main Content */}
-          <main className="flex-1 p-6 overflow-hidden">
-            <div className="max-w-7xl mx-auto w-full h-full">
+          <main className="flex-1 p-1">
+  <div className="max-w-7xl mx-auto w-full">
               <Outlet />
             </div>
           </main>

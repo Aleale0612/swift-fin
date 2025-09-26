@@ -130,11 +130,11 @@ const Auth = () => {
               <TrendingUp className="h-5 w-5 text-primary-foreground" />
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              FinanceHub
+              Keuanganku.id
             </h1>
           </div>
           <p className="text-muted-foreground">
-            Kelola keuangan pribadi Anda dengan aman
+            Kelola keuangan aman dan nyaman.
           </p>
         </div>
 

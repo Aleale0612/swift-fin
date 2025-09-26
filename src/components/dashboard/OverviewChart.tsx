@@ -22,14 +22,17 @@ export function OverviewChart({ type, height = 300 }: OverviewChartProps) {
   useEffect(() => {
     const fetchData = async () => {
       // 🔹 Ambil data transaksi (contoh tabel: "transactions")
-      const { data: transactions, error } = await supabase
-        .from("transactions")
-        .select("amount, type, category, created_at");
-
-      if (error) {
-        console.error("Error fetching transactions:", error.message);
-        return;
-      }
+     const { data: transactions, error } = await supabase
+  .from("transactions")
+  .select(`
+    amount,
+    type,
+    created_at,
+    categories (
+      id,
+      name
+    )
+  `);
 
       if (transactions) {
         // Grouping bulanan
@@ -49,14 +52,14 @@ export function OverviewChart({ type, height = 300 }: OverviewChartProps) {
         setMonthlyData(Object.values(grouped));
 
         // Grouping kategori (buat pie chart)
-        const groupedExpense = transactions
-          .filter((trx: any) => trx.type === "expense")
-          .reduce((acc: any, trx: any) => {
-            if (!acc[trx.category]) acc[trx.category] = 0;
-            acc[trx.category] += trx.amount;
-            return acc;
-          }, {});
-
+      const groupedExpense = transactions
+  .filter((trx: any) => trx.type === "expense")
+  .reduce((acc: any, trx: any) => {
+    const categoryName = trx.categories?.name || "Unknown";
+    if (!acc[categoryName]) acc[categoryName] = 0;
+    acc[categoryName] += trx.amount;
+    return acc;
+  }, {});
         setExpenseData(
           Object.keys(groupedExpense).map((key, idx) => ({
             name: key,
