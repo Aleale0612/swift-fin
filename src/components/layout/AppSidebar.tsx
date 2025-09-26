@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   LayoutDashboard,
   CreditCard,
@@ -68,6 +69,7 @@ const menuItems = [
 
 export function AppSidebar() {
   const { state } = useSidebar();
+  const { signOut } = useAuth();
   const location = useLocation();
   const currentPath = location.pathname;
   const collapsed = state === "collapsed";
@@ -205,7 +207,10 @@ export function AppSidebar() {
 
         {/* Logout */}
         <div className="mt-6 mx-3">
-          <button className="w-full flex items-center gap-3 px-3 py-2 text-sidebar-foreground hover:text-destructive transition-colors duration-200">
+          <button 
+            onClick={() => signOut()}
+            className="w-full flex items-center gap-3 px-3 py-2 text-sidebar-foreground hover:text-destructive transition-colors duration-200"
+          >
             <LogOut className="h-5 w-5" />
             {!collapsed && <span className="font-medium">Keluar</span>}
           </button>
