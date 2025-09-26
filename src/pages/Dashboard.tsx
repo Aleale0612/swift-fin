@@ -4,7 +4,9 @@ import { OverviewChart } from "@/components/dashboard/OverviewChart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { TransactionModal } from "@/components/modals/TransactionModal";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 const recentTransactions = [
   {
@@ -65,6 +67,8 @@ const upcomingDebts = [
 ];
 
 export default function Dashboard() {
+  const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -93,7 +97,10 @@ export default function Dashboard() {
           </p>
         </div>
         
-        <Button className="bg-gradient-primary shadow-glow hover:shadow-glow/70 transition-all duration-300">
+        <Button 
+          onClick={() => setIsTransactionModalOpen(true)}
+          className="bg-gradient-primary shadow-glow hover:shadow-glow/70 transition-all duration-300"
+        >
           <Plus className="h-4 w-4 mr-2" />
           Tambah Transaksi
         </Button>
@@ -258,6 +265,16 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Transaction Modal */}
+      <TransactionModal
+        isOpen={isTransactionModalOpen}
+        onClose={() => setIsTransactionModalOpen(false)}
+        onSuccess={() => {
+          // Optionally refresh data here
+          console.log("Transaction added successfully");
+        }}
+      />
     </div>
   );
 }

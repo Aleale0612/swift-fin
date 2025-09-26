@@ -4,6 +4,7 @@ import { AppSidebar } from "./AppSidebar";
 import { Bell, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils";
 
 export function DashboardLayout() {
@@ -30,6 +31,9 @@ export function DashboardLayout() {
               </div>
 
               <div className="flex items-center gap-3">
+                {/* Theme Toggle */}
+                <ThemeToggle />
+                
                 {/* Notifications */}
                 <Button 
                   variant="ghost" 
