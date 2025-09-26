@@ -134,139 +134,109 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Trend Chart */}
-        <Card className="bg-gradient-card border-card-border shadow-card">
-          <CardHeader>
-            <CardTitle className="text-card-foreground">Tren Keuangan</CardTitle>
-            <CardDescription>
-              Pemasukan vs Pengeluaran 6 bulan terakhir
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <OverviewChart type="line" height={300} />
-          </CardContent>
-        </Card>
-
-        {/* Expense Breakdown */}
-        <Card className="bg-gradient-card border-card-border shadow-card">
-          <CardHeader>
-            <CardTitle className="text-card-foreground">Breakdown Pengeluaran</CardTitle>
-            <CardDescription>Kategori pengeluaran bulan ini</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <OverviewChart type="pie" height={300} />
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Recent Activity & Alerts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Transactions */}
-        <Card className="lg:col-span-2 bg-card border-card-border">
-          <CardHeader>
-            <CardTitle className="text-card-foreground">Transaksi Terbaru</CardTitle>
-            <CardDescription>Aktivitas keuangan terkini</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {recentTransactions.map((transaction) => (
-              <div
-                key={transaction.id}
-                className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={cn(
-                      "p-2 rounded-full",
-                      transaction.type === "income"
-                        ? "bg-success/20 text-success"
-                        : "bg-destructive/20 text-destructive"
-                    )}
-                  >
-                    {transaction.type === "income" ? (
-                      <ArrowUpRight className="h-4 w-4" />
-                    ) : (
-                      <ArrowDownRight className="h-4 w-4" />
-                    )}
-                  </div>
-
-                  <div>
-                    <p className="font-medium text-card-foreground">
-                      {transaction.description}
-                    </p>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <span>{formatDate(transaction.created_at)}</span>
-                      <Badge variant="outline" className="text-xs">
-                        {transaction.category}
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-
-                <span
-                  className={cn(
-                    "font-semibold",
-                    transaction.type === "income" ? "text-success" : "text-destructive"
-                  )}
-                >
-                  {transaction.type === "income" ? "+" : "-"}
-                  {formatCurrency(transaction.amount)}
-                </span>
+     {/* Recent Activity & Alerts */}
+<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  {/* Recent Transactions */}
+  <Card className="lg:col-span-2 bg-card border-card-border">
+    <CardHeader>
+      <CardTitle className="text-card-foreground">Transaksi Terbaru</CardTitle>
+      <CardDescription>Aktivitas keuangan terkini</CardDescription>
+    </CardHeader>
+    {/* dibatasi tinggi + scroll internal */}
+    <CardContent className="space-y-3 max-h-64 overflow-y-auto pr-2">
+      {recentTransactions.map((transaction) => (
+        <div
+          key={transaction.id}
+          className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className={cn(
+                "p-2 rounded-full",
+                transaction.type === "income"
+                  ? "bg-success/20 text-success"
+                  : "bg-destructive/20 text-destructive"
+              )}
+            >
+              {transaction.type === "income" ? (
+                <ArrowUpRight className="h-4 w-4" />
+              ) : (
+                <ArrowDownRight className="h-4 w-4" />
+              )}
+            </div>
+            <div>
+              <p className="font-medium text-card-foreground text-sm">
+                {transaction.description}
+              </p>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span>{formatDate(transaction.created_at)}</span>
+                <Badge variant="outline" className="text-[10px]">
+                  {transaction.category}
+                </Badge>
               </div>
-            ))}
-          </CardContent>
-        </Card>
+            </div>
+          </div>
+          <span
+            className={cn(
+              "font-semibold text-sm",
+              transaction.type === "income" ? "text-success" : "text-destructive"
+            )}
+          >
+            {transaction.type === "income" ? "+" : "-"}
+            {formatCurrency(transaction.amount)}
+          </span>
+        </div>
+      ))}
+    </CardContent>
+  </Card>
 
-        {/* Upcoming Debts Alert */}
-        <Card className="bg-card border-card-border">
-          <CardHeader>
-            <CardTitle className="text-card-foreground flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-warning" />
-              Reminder Utang
-            </CardTitle>
-            <CardDescription>Utang yang akan jatuh tempo</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {upcomingDebts.map((debt) => (
-              <div
-                key={debt.id}
-                className="p-3 rounded-lg bg-warning/10 border border-warning/20"
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <p className="font-medium text-card-foreground text-sm">{debt.name}</p>
-                  <Badge
-                    variant="outline"
-                    className="text-xs text-warning border-warning/30"
-                  >
-                    {/* hitung sisa hari */}
-                    {Math.max(
-                      0,
-                      Math.ceil(
-                        (new Date(debt.due_date).getTime() - Date.now()) /
-                          (1000 * 60 * 60 * 24)
-                      )
-                    )}{" "}
-                    hari
-                  </Badge>
-                </div>
+  {/* Upcoming Debts Alert */}
+  <Card className="bg-card border-card-border">
+    <CardHeader>
+      <CardTitle className="text-card-foreground flex items-center gap-2">
+        <AlertCircle className="h-5 w-5 text-warning" />
+        Reminder Utang
+      </CardTitle>
+      <CardDescription>Utang yang akan jatuh tempo</CardDescription>
+    </CardHeader>
+    {/* dibatasi tinggi + scroll internal */}
+    <CardContent className="space-y-3 max-h-64 overflow-y-auto pr-2">
+      {upcomingDebts.map((debt) => (
+        <div
+          key={debt.id}
+          className="p-3 rounded-lg bg-warning/10 border border-warning/20"
+        >
+          <div className="flex items-start justify-between mb-2">
+            <p className="font-medium text-card-foreground text-sm">{debt.name}</p>
+            <Badge
+              variant="outline"
+              className="text-xs text-warning border-warning/30"
+            >
+              {Math.max(
+                0,
+                Math.ceil(
+                  (new Date(debt.due_date).getTime() - Date.now()) /
+                    (1000 * 60 * 60 * 24)
+                )
+              )}{" "}
+              hari
+            </Badge>
+          </div>
+          <p className="text-warning font-semibold text-sm">
+            {formatCurrency(debt.amount)}
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Jatuh tempo: {formatDate(debt.due_date)}
+          </p>
+        </div>
+      ))}
+      <Button variant="outline" size="sm" className="w-full mt-3">
+        Lihat Semua Utang
+      </Button>
+    </CardContent>
+  </Card>
+</div>
 
-                <p className="text-warning font-semibold">
-                  {formatCurrency(debt.amount)}
-                </p>
-
-                <p className="text-xs text-muted-foreground mt-1">
-                  Jatuh tempo: {formatDate(debt.due_date)}
-                </p>
-              </div>
-            ))}
-
-            <Button variant="outline" size="sm" className="w-full mt-3">
-              Lihat Semua Utang
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Transaction Modal */}
       <TransactionModal
