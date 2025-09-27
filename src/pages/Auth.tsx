@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,11 +13,15 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Shield, Wallet } from "lucide-react";
+import { Loader2, Shield, Wallet, ArrowLeft } from "lucide-react";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useTheme } from "@/providers/ThemeProvider";
 
 const Auth = () => {
   const { user, signUp, signIn, loading } = useAuth();
   const { toast } = useToast();
+  const { theme } = useTheme();
+  const location = useLocation();
 
   // pisah loading state biar nggak bentrok signin & signup
   const [isLoadingSignIn, setIsLoadingSignIn] = useState(false);
@@ -25,7 +29,9 @@ const Auth = () => {
 
   // redirect kalau udah login
   if (!loading && user) {
-    return <Navigate to="/dashboard" replace />;
+    // Redirect to the page they were trying to access or dashboard
+    const from = location.state?.from?.pathname || "/dashboard";
+    return <Navigate to={from} replace />;
   }
 
   // form states dipisah biar lebih aman
@@ -121,151 +127,177 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-background/50 p-4">
-      <div className="w-full max-w-md space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="flex items-center justify-center space-x-2">
-            <div className="h-8 w-8 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center">
-              <Wallet className="h-5 w-5 text-primary-foreground" />
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-background/50">
+      {/* Background elements similar to landing page */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-full blur-3xl animate-pulse"></div>
+      </div>
+
+      {/* Navigation with back button */}
+      <nav className="relative z-10 p-4 flex justify-between items-center">
+        <Button 
+          variant="ghost" 
+          className="flex items-center gap-2 hover:bg-background/50"
+          asChild
+        >
+          <a href="/">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </a>
+        </Button>
+        
+        <ThemeToggle />
+      </nav>
+
+      {/* Main content */}
+      <div className="flex-1 flex items-center justify-center p-4 relative z-10">
+        <div className="w-full max-w-md space-y-6">
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <div className="flex items-center justify-center space-x-2">
+              <div className="h-8 w-8 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center">
+                <Wallet className="h-5 w-5 text-primary-foreground" />
+              </div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                TrekFi
+              </h1>
             </div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              TrekFi
-            </h1>
+            <p className="text-muted-foreground">
+              Manage your money with TrekFi
+            </p>
           </div>
-          <p className="text-muted-foreground">
-            Manage your money with TrekFi
-          </p>
-        </div>
 
-        {/* Auth Form */}
-        <Card className="border-muted/20 bg-card/50 backdrop-blur-sm shadow-xl">
-          <CardHeader className="space-y-1">
-            <div className="flex items-center space-x-2">
-              <Shield className="h-5 w-5 text-primary" />
-              <CardTitle>Secure Access</CardTitle>
-            </div>
-            <CardDescription>
-              Log in to your account or create a new account
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="signin" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Log in</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
+          {/* Auth Form */}
+          <Card className="border-muted/20 bg-card/50 backdrop-blur-sm shadow-xl">
+            <CardHeader className="space-y-1">
+              <div className="flex items-center space-x-2">
+                <Shield className="h-5 w-5 text-primary" />
+                <CardTitle>Secure Access</CardTitle>
+              </div>
+              <CardDescription>
+                Log in to your account or create a new account
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs defaultValue="signin" className="space-y-4">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="signin">Log in</TabsTrigger>
+                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                </TabsList>
 
-              {/* Sign In */}
-              <TabsContent value="signin" className="space-y-4">
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
-                    <Input
-                      id="signin-email"
-                      name="email"
-                      type="email"
-                      placeholder="nama@email.com"
-                      value={signInData.email}
-                      onChange={handleSignInChange}
-                      required
-                      className="bg-background/50 border-muted/40"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
-                    <Input
-                      id="signin-password"
-                      name="password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={signInData.password}
-                      onChange={handleSignInChange}
-                      required
-                      className="bg-background/50 border-muted/40"
-                    />
-                  </div>
-                  <Button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
-                    disabled={isLoadingSignIn}
-                  >
-                    {isLoadingSignIn ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Signing in...
-                      </>
-                    ) : (
-                      "Masuk"
-                    )}
-                  </Button>
-                </form>
-              </TabsContent>
+                {/* Sign In */}
+                <TabsContent value="signin" className="space-y-4">
+                  <form onSubmit={handleSignIn} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signin-email">Email</Label>
+                      <Input
+                        id="signin-email"
+                        name="email"
+                        type="email"
+                        placeholder="nama@email.com"
+                        value={signInData.email}
+                        onChange={handleSignInChange}
+                        required
+                        className="bg-background/50 border-muted/40"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signin-password">Password</Label>
+                      <Input
+                        id="signin-password"
+                        name="password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={signInData.password}
+                        onChange={handleSignInChange}
+                        required
+                        className="bg-background/50 border-muted/40"
+                      />
+                    </div>
+                    <Button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+                      disabled={isLoadingSignIn}
+                    >
+                      {isLoadingSignIn ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Signing in...
+                        </>
+                      ) : (
+                        "Masuk"
+                      )}
+                    </Button>
+                  </form>
+                </TabsContent>
 
-              {/* Sign Up */}
-              <TabsContent value="signup" className="space-y-4">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="fullName">Full Name</Label>
-                    <Input
-                      id="fullName"
-                      name="fullName"
-                      type="text"
-                      placeholder="John Doe"
-                      value={signUpData.fullName}
-                      onChange={handleSignUpChange}
-                      className="bg-background/50 border-muted/40"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      name="email"
-                      type="email"
-                      placeholder="nama@email.com"
-                      value={signUpData.email}
-                      onChange={handleSignUpChange}
-                      required
-                      className="bg-background/50 border-muted/40"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <Input
-                      id="signup-password"
-                      name="password"
-                      type="password"
-                      placeholder="••••••••"
-                      value={signUpData.password}
-                      onChange={handleSignUpChange}
-                      required
-                      className="bg-background/50 border-muted/40"
-                    />
-                  </div>
-                  <Button
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
-                    disabled={isLoadingSignUp}
-                  >
-                    {isLoadingSignUp ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Creating account...
-                      </>
-                    ) : (
-                      "Buat Akun"
-                    )}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+                {/* Sign Up */}
+                <TabsContent value="signup" className="space-y-4">
+                  <form onSubmit={handleSignUp} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="fullName">Full Name</Label>
+                      <Input
+                        id="fullName"
+                        name="fullName"
+                        type="text"
+                        placeholder="John Doe"
+                        value={signUpData.fullName}
+                        onChange={handleSignUpChange}
+                        className="bg-background/50 border-muted/40"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-email">Email</Label>
+                      <Input
+                        id="signup-email"
+                        name="email"
+                        type="email"
+                        placeholder="nama@email.com"
+                        value={signUpData.email}
+                        onChange={handleSignUpChange}
+                        required
+                        className="bg-background/50 border-muted/40"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-password">Password</Label>
+                      <Input
+                        id="signup-password"
+                        name="password"
+                        type="password"
+                        placeholder="••••••••"
+                        value={signUpData.password}
+                        onChange={handleSignUpChange}
+                        required
+                        className="bg-background/50 border-muted/40"
+                      />
+                    </div>
+                    <Button
+                      type="submit"
+                      className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
+                      disabled={isLoadingSignUp}
+                    >
+                      {isLoadingSignUp ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Creating account...
+                        </>
+                      ) : (
+                        "Buat Akun"
+                      )}
+                    </Button>
+                  </form>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
 
-        {/* Security Note */}
-        <div className="text-center text-sm text-muted-foreground">
-          <p>🔒 Your data is protected with end-to-end encryption</p>
+          {/* Security Note */}
+          <div className="text-center text-sm text-muted-foreground">
+            <p>🔒 Your data is protected with end-to-end encryption</p>
+          </div>
         </div>
       </div>
     </div>
