@@ -2,83 +2,121 @@
 @tailwind components;
 @tailwind utilities;
 
-/* 🎨 Financial Dashboard Design System - Dark Mode with Neon Accents */
-
+/* === THEME VARIABLES === */
 @layer base {
+  /* 🌞 Light Theme */
   :root {
-    /* Core Dark Background System */
-    --background: 222 12% 7%;
-    --foreground: 210 40% 96%;
-    
-    /* Card System with Subtle Gradients */
-    --card: 222 20% 9%;
-    --card-foreground: 210 40% 96%;
-    --card-border: 220 25% 15%;
-    
-    /* Popover & Modal System */
-    --popover: 224 20% 8%;
-    --popover-foreground: 210 40% 96%;
-    
-    /* Neon Accent System */
-    --primary: 186 100% 50%; /* Neon Cyan */
-    --primary-foreground: 222 12% 7%;
-    --primary-glow: 186 100% 65%;
-    
-    /* Secondary Emerald Accent */
-    --secondary: 166 100% 50%; /* Neon Emerald */
-    --secondary-foreground: 222 12% 7%;
-    --secondary-glow: 166 100% 65%;
-    
-    /* Muted States */
-    --muted: 220 25% 15%;
-    --muted-foreground: 215 20% 65%;
-    
-    /* Interactive Elements */
-    --accent: 186 85% 45%;
-    --accent-foreground: 210 40% 96%;
-    
+    --background: 0 0% 100%;
+    --foreground: 222 12% 10%;
+
+    /* Card */
+    --card: 0 0% 100%;
+    --card-foreground: 222 12% 10%;
+    --card-border: 220 15% 90%;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 222 12% 20%;
+    --sidebar-primary: 220 90% 56%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 20% 95%;
+    --sidebar-accent-foreground: 222 12% 20%;
+    --sidebar-border: 220 15% 85%;
+    --sidebar-ring: 220 90% 56%;
+    --gradient-sidebar: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 96%));
+
+    /* Popover & Modal */
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 12% 10%;
+
+    /* Accent & Muted */
+    --primary: 220 90% 56%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 260 70% 50%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 220 20% 96%;
+    --muted-foreground: 222 12% 40%;
+
+    --accent: 220 90% 56%;
+    --accent-foreground: 0 0% 100%;
+
     /* Status Colors */
-    --success: 142 100% 50%;
-    --warning: 45 100% 60%;
-    --destructive: 0 85% 60%;
-    --destructive-foreground: 210 40% 98%;
-    
-    /* Form Elements */
-    --border: 220 25% 18%;
-    --input: 222 20% 12%;
-    --ring: 186 100% 50%;
-    
+    --success: 142 100% 35%;
+    --warning: 45 100% 40%;
+    --destructive: 0 85% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Inputs */
+    --border: 220 15% 90%;
+    --input: 0 0% 100%;
+    --ring: 220 90% 56%;
+
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(186 100% 50%), hsl(166 100% 50%));
-    --gradient-card: linear-gradient(145deg, hsl(222 20% 9%), hsl(220 25% 11%));
-    --gradient-sidebar: linear-gradient(180deg, hsl(222 25% 8%), hsl(222 20% 6%));
-    
-    /* Shadows & Glows */
-    --shadow-glow: 0 0 30px hsl(186 100% 50% / 0.3);
-    --shadow-card: 0 4px 24px hsl(222 50% 4% / 0.5);
-    --shadow-sidebar: 4px 0 24px hsl(222 50% 4% / 0.3);
-    
+    --gradient-primary: linear-gradient(135deg, hsl(220 90% 56%), hsl(260 70% 50%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(220 20% 98%));
+
+    /* Shadows */
+    --shadow-glow: 0 0 20px hsl(220 90% 56% / 0.2);
+    --shadow-card: 0 4px 20px hsl(0 0% 0% / 0.05);
+    --shadow-sidebar: 4px 0 20px hsl(0 0% 0% / 0.05);
+
     /* Radius */
     --radius: 0.75rem;
     --radius-lg: 1rem;
-    
-    /* Sidebar System */
+  }
+
+  /* 🌙 Dark Theme */
+  .dark {
+    --background: 222 12% 7%;
+    --foreground: 210 40% 96%;
+
+    --card: 222 20% 9%;
+    --card-foreground: 210 40% 96%;
+    --card-border: 220 25% 15%;
+
     --sidebar-background: 222 25% 8%;
     --sidebar-foreground: 210 25% 85%;
-    --sidebar-primary: 186 100% 50%;
+    --sidebar-primary: 186 100% 50%; /* Neon Cyan */
     --sidebar-primary-foreground: 222 12% 7%;
     --sidebar-accent: 220 25% 12%;
     --sidebar-accent-foreground: 210 25% 85%;
     --sidebar-border: 220 25% 15%;
     --sidebar-ring: 186 100% 50%;
-    
-    /* Typography Scale */
-    --font-display: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-    
-    /* Animation Timing */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --gradient-sidebar: linear-gradient(180deg, hsl(222 25% 8%), hsl(222 20% 6%));
+
+    --popover: 224 20% 8%;
+    --popover-foreground: 210 40% 96%;
+
+    --primary: 186 100% 50%;
+    --primary-foreground: 222 12% 7%;
+    --primary-glow: 186 100% 65%;
+
+    --secondary: 166 100% 50%;
+    --secondary-foreground: 222 12% 7%;
+    --secondary-glow: 166 100% 65%;
+
+    --muted: 220 25% 15%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 186 85% 45%;
+    --accent-foreground: 210 40% 96%;
+
+    --success: 142 100% 50%;
+    --warning: 45 100% 60%;
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 25% 18%;
+    --input: 222 20% 12%;
+    --ring: 186 100% 50%;
+
+    --gradient-primary: linear-gradient(135deg, hsl(186 100% 50%), hsl(166 100% 50%));
+    --gradient-card: linear-gradient(145deg, hsl(222 20% 9%), hsl(220 25% 11%));
+
+    --shadow-glow: 0 0 30px hsl(186 100% 50% / 0.3);
+    --shadow-card: 0 4px 24px hsl(222 50% 4% / 0.5);
+    --shadow-sidebar: 4px 0 24px hsl(222 50% 4% / 0.3);
   }
 }
 
@@ -88,23 +126,20 @@
   }
 
   body {
-    @apply bg-background text-foreground font-body;
+    @apply bg-background text-foreground font-body transition-colors duration-300;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
-  
-  /* Enhanced scrollbar styling */
+
+  /* Scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
   }
-  
   ::-webkit-scrollbar-track {
     @apply bg-muted/30;
   }
-  
   ::-webkit-scrollbar-thumb {
     @apply bg-muted rounded-full;
   }
-  
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-muted-foreground/50;
   }

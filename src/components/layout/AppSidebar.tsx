@@ -12,6 +12,8 @@ import {
   Wallet,
   TrendingUp,
   AlertCircle,
+  TargetIcon,
+  RefreshCw,
 } from "lucide-react";
 import {
   Sidebar,
@@ -33,7 +35,7 @@ const menuItems = [
   { title: "Utang & Piutang", url: "/debts", icon: PiggyBank, category: "main" },
   { title: "Laporan", url: "/reports", icon: BarChart3, category: "main" },
   { title: "Kategori", url: "/categories", icon: Receipt, category: "manage" },
-  { title: "Pengaturan", url: "/settings", icon: Settings, category: "manage" },
+  { title: "Pencapaian", url: "/goals", icon: TargetIcon, category: "manage" },
 ];
 
 export function AppSidebar() {
@@ -45,6 +47,7 @@ export function AppSidebar() {
   const [saldo, setSaldo] = useState(0);
   const [monthlyChange, setMonthlyChange] = useState(0);
   const [dueDebts, setDueDebts] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const isActive = (path: string) => {
     if (path === "/") return location.pathname === "/";
@@ -65,43 +68,47 @@ export function AppSidebar() {
   const manageItems = menuItems.filter((item) => item.category === "manage");
 
   // Fetch data from Supabase
+  const fetchData = async () => {
+    setLoading(true);
+
+    const { data: trxData } = await supabase.from("transactions").select("amount,type,created_at");
+
+    if (trxData) {
+      let income = 0;
+      let expense = 0;
+      trxData.forEach((t) => {
+        if (t.type === "income") income += t.amount;
+        if (t.type === "expense") expense += t.amount;
+      });
+
+      setSaldo(income - expense);
+
+      const currentMonth = new Date().getMonth();
+      const monthlyIncome = trxData
+        .filter((t) => new Date(t.created_at).getMonth() === currentMonth && t.type === "income")
+        .reduce((sum, t) => sum + t.amount, 0);
+
+      const monthlyExpense = trxData
+        .filter((t) => new Date(t.created_at).getMonth() === currentMonth && t.type === "expense")
+        .reduce((sum, t) => sum + t.amount, 0);
+
+      setMonthlyChange(monthlyIncome - monthlyExpense);
+    }
+
+    const { data: debtData } = await supabase.from("debts").select("due_date");
+    if (debtData) {
+      const upcoming = debtData.filter((d) => {
+        const due = new Date(d.due_date).getTime();
+        const now = Date.now();
+        return due >= now && due <= now + 7 * 24 * 60 * 60 * 1000;
+      });
+      setDueDebts(upcoming.length);
+    }
+
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const { data: trxData } = await supabase.from("transactions").select("amount,type,created_at");
-
-      if (trxData) {
-        let income = 0;
-        let expense = 0;
-        trxData.forEach((t) => {
-          if (t.type === "income") income += t.amount;
-          if (t.type === "expense") expense += t.amount;
-        });
-
-        setSaldo(income - expense);
-
-        const currentMonth = new Date().getMonth();
-        const monthlyIncome = trxData
-          .filter((t) => new Date(t.created_at).getMonth() === currentMonth && t.type === "income")
-          .reduce((sum, t) => sum + t.amount, 0);
-
-        const monthlyExpense = trxData
-          .filter((t) => new Date(t.created_at).getMonth() === currentMonth && t.type === "expense")
-          .reduce((sum, t) => sum + t.amount, 0);
-
-        setMonthlyChange(monthlyIncome - monthlyExpense);
-      }
-
-      const { data: debtData } = await supabase.from("debts").select("due_date");
-      if (debtData) {
-        const upcoming = debtData.filter((d) => {
-          const due = new Date(d.due_date).getTime();
-          const now = Date.now();
-          return due >= now && due <= now + 7 * 24 * 60 * 60 * 1000;
-        });
-        setDueDebts(upcoming.length);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -139,11 +146,26 @@ export function AppSidebar() {
         {/* Quick Stats */}
         {!collapsed && (
           <div className="mx-3 mb-6 p-4 bg-card border border-card-border rounded-xl">
-            <div className="flex items-center gap-2 mb-3">
-              <TrendingUp className="h-4 w-4 text-success" />
-              <span className="text-sm font-medium text-card-foreground">
-                Status Keuangan
-              </span>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-4 w-4 text-success" />
+                <span className="text-sm font-medium text-card-foreground">
+                  Status Keuangan
+                </span>
+              </div>
+              {/* Tombol Refresh */}
+              <button
+                onClick={fetchData}
+                className="p-1 rounded-md hover:bg-muted transition-colors"
+                disabled={loading}
+              >
+                <RefreshCw
+                  className={cn(
+                    "h-4 w-4 text-muted-foreground",
+                    loading && "animate-spin text-primary"
+                  )}
+                />
+              </button>
             </div>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">

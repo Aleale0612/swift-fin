@@ -13,6 +13,7 @@ import Debts from "./pages/Debts";
 import Reports from "./pages/Reports";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import Goals from "./pages/Goals";
 
 const queryClient = new QueryClient();
 
@@ -53,9 +54,7 @@ const App = () => (
                   element={<div className="p-8">Halaman Kategori (Coming Soon)</div>}
                 />
                 <Route
-                  path="settings"
-                  element={<div className="p-8">Halaman Pengaturan (Coming Soon)</div>}
-                />
+                  path="goals" element={<Goals />}/>
               </Route>
 
               {/* Catch-all */}
