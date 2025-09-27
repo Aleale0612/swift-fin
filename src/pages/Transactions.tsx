@@ -47,7 +47,7 @@ export default function Transactions() {
 
   // pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const rowsPerPage = 5; // Tetap 5 baris per halaman dan tidak bisa diubah
 
   useEffect(() => {
     if (user) {
@@ -345,27 +345,10 @@ export default function Transactions() {
                 </Table>
               </div>
 
-              {/* Pagination Controls */}
+              {/* Pagination Controls - Diperbaiki */}
               <div className="flex items-center justify-between mt-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Rows per page:</span>
-                  <Select
-                    value={rowsPerPage.toString()}
-                    onValueChange={(val) => {
-                      setRowsPerPage(Number(val));
-                      setCurrentPage(1);
-                    }}
-                  >
-                    <SelectTrigger className="w-20">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="5">5</SelectItem>
-                      <SelectItem value="10">10</SelectItem>
-                      <SelectItem value="50">50</SelectItem>
-                      <SelectItem value="100">100</SelectItem>
-                    </SelectContent>
-                  </Select>
+                <div className="text-sm text-muted-foreground">
+                  Showing {indexOfFirstRow + 1} to {Math.min(indexOfLastRow, filteredTransactions.length)} of {filteredTransactions.length} entries
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -378,16 +361,32 @@ export default function Transactions() {
                     Prev
                   </Button>
 
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <Button
-                      key={page}
-                      variant={page === currentPage ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => goToPage(page)}
-                    >
-                      {page}
-                    </Button>
-                  ))}
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      let pageNum;
+                      if (totalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+                      
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={pageNum === currentPage ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => goToPage(pageNum)}
+                          className="w-8 h-8 p-0"
+                        >
+                          {pageNum}
+                        </Button>
+                      );
+                    })}
+                  </div>
 
                   <Button
                     variant="outline"

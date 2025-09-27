@@ -64,7 +64,7 @@ export default function Debts() {
 
   // 🔥 State untuk pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5); // default 5
+  const itemsPerPage = 5; // Tetap 5 baris per halaman dan tidak bisa diubah
 
   useEffect(() => {
     if (user) fetchDebts();
@@ -160,10 +160,8 @@ export default function Debts() {
   // 🔥 Pagination logic
   const totalPages = Math.ceil(filteredDebts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentDebts = filteredDebts.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  const endIndex = Math.min(startIndex + itemsPerPage, filteredDebts.length);
+  const currentDebts = filteredDebts.slice(startIndex, endIndex);
 
   return (
     <div className="space-y-6">
@@ -189,6 +187,54 @@ export default function Debts() {
           Add Debt/Receivable
         </Button>
       </div>
+
+      {/* Filters Card - Ditambahkan */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Filter className="h-5 w-5" />
+            Filters
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search debts or receivables..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger className="w-full md:w-48">
+                <SelectValue placeholder="Filter by type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="debt">Debt</SelectItem>
+                <SelectItem value="receivable">Receivable</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-full md:w-48">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Statuses</SelectItem>
+                <SelectItem value="paid">Paid</SelectItem>
+                <SelectItem value="partial">Partial</SelectItem>
+                <SelectItem value="unpaid">Unpaid</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Debts Table */}
       <Card>
@@ -345,55 +391,52 @@ export default function Debts() {
                 </Table>
               </div>
 
-              {/* Pagination controls */}
+              {/* Pagination controls - Diperbaiki */}
               <div className="flex items-center justify-between mt-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span>Show</span>
-                  <Select
-                    value={itemsPerPage.toString()}
-                    onValueChange={(val) => {
-                      setItemsPerPage(Number(val));
-                      setCurrentPage(1);
-                    }}
-                  >
-                    <SelectTrigger className="w-20">
-                      <SelectValue placeholder={itemsPerPage.toString()} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="5">5</SelectItem>
-                      <SelectItem value="10">10</SelectItem>
-                      <SelectItem value="20">20</SelectItem>
-                      <SelectItem value="50">50</SelectItem>
-                      <SelectItem value="100">100</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <span>entries</span>
+                <div className="text-sm text-muted-foreground">
+                  Showing {startIndex + 1} to {endIndex} of {filteredDebts.length} entries
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2">
                   <Button
-                    size="sm"
                     variant="outline"
+                    size="sm"
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage((p) => p - 1)}
                   >
                     Prev
                   </Button>
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (page) => (
-                      <Button
-                        key={page}
-                        size="sm"
-                        variant={page === currentPage ? "default" : "outline"}
-                        onClick={() => setCurrentPage(page)}
-                      >
-                        {page}
-                      </Button>
-                    )
-                  )}
+
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      let pageNum;
+                      if (totalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i;
+                      } else {
+                        pageNum = currentPage - 2 + i;
+                      }
+                      
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={pageNum === currentPage ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setCurrentPage(pageNum)}
+                          className="w-8 h-8 p-0"
+                        >
+                          {pageNum}
+                        </Button>
+                      );
+                    })}
+                  </div>
+
                   <Button
-                    size="sm"
                     variant="outline"
+                    size="sm"
                     disabled={currentPage === totalPages}
                     onClick={() => setCurrentPage((p) => p + 1)}
                   >

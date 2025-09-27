@@ -121,7 +121,7 @@ export default function Dashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-display font-bold text-foreground">
-            Dashboard FiWallets
+            Dashboard TrekFi
           </h1>
           <p className="text-muted-foreground mt-1">
             Welcome back Boss !
@@ -134,14 +134,14 @@ export default function Dashboard() {
           className="bg-gradient-primary shadow-glow hover:shadow-glow/70 transition-all duration-300"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Tambah Transaksi
+          Added Transactions
         </Button>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
-          title="Total Saldo"
+          title="Total Balance"
           value={formatCurrency(stats.saldo)}
           change="+8.2%"
           changeType="positive"
@@ -150,7 +150,7 @@ export default function Dashboard() {
         />
 
         <StatCard
-          title="Pemasukan Bulan Ini"
+          title="Income This Month"
           value={formatCurrency(stats.income)}
           change="+12.5%"
           changeType="positive"
@@ -158,7 +158,7 @@ export default function Dashboard() {
         />
 
         <StatCard
-          title="Pengeluaran Bulan Ini"
+          title="Expense This Month"
           value={formatCurrency(stats.expense)}
           change="-3.2%"
           changeType="negative"
@@ -166,7 +166,7 @@ export default function Dashboard() {
         />
 
         <StatCard
-          title="Transaksi Bulan Ini"
+          title="Transactions This Month"
           value={stats.totalTransactions.toString()}
           change="+5.1%"
           changeType="positive"
@@ -277,7 +277,7 @@ export default function Dashboard() {
 
             {/* Link ke semua utang */}
             <Button asChild variant="outline" size="sm" className="w-full mt-3">
-              <Link to="/debts">Lihat Semua Utang</Link>
+              <Link to="/debts">See Full Debts</Link>
             </Button>
           </CardContent>
         </Card>

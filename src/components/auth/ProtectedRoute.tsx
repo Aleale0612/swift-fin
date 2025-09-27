@@ -27,12 +27,12 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   if (requireAuth && !user) {
     // butuh login tapi user nggak ada → lempar ke /auth
-    return <Navigate to="/auth" replace />;
+    return <Navigate to="/Auth" replace />;
   }
 
   if (!requireAuth && user) {
     // kalau halaman public (misal /auth) tapi user sudah login → redirect ke dashboard
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;

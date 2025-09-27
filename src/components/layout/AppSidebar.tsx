@@ -33,7 +33,7 @@ const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard, category: "main" },
   { title: "Transactions", url: "/transactions", icon: CreditCard, category: "main" },
   { title: "Debts", url: "/debts", icon: PiggyBank, category: "main" },
-  { title: "Financial statements", url: "/reports", icon: BarChart3, category: "main" },
+  { title: "Financial statements", url: "/reports", icon: BarChart3, category: "manage" },
   { title: "Category", url: "/categories", icon: Receipt, category: "manage" },
   { title: "Goals and needs", url: "/goals", icon: TargetIcon, category: "main" },
 ];
@@ -136,7 +136,7 @@ export function AppSidebar() {
           {!collapsed && (
             <div className="flex flex-col">
               <h1 className="font-display font-bold text-lg text-sidebar-foreground">
-                FiWallets
+                TrekFi
               </h1>
               <p className="text-xs text-muted-foreground">Not to be confused manage our money</p>
             </div>

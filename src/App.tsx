@@ -14,6 +14,8 @@ import Reports from "./pages/Reports";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import Goals from "./pages/Goals";
+import LandingPage from "./pages/LandingPages"; // Perbaiki import
+import Profile from "./pages/profile"; // Perbaiki import
 
 const queryClient = new QueryClient();
 
@@ -26,7 +28,10 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <Routes>
-              {/* Public route */}
+              {/* Landing page - public route */}
+              <Route path="/" element={<LandingPage />} />
+              
+              {/* Auth page - public route */}
               <Route
                 path="/auth"
                 element={
@@ -36,9 +41,9 @@ const App = () => (
                 }
               />
 
-              {/* Protected routes */}
+              {/* Protected routes with dashboard layout */}
               <Route
-                path="/"
+                path="/dashboard"
                 element={
                   <ProtectedRoute>
                     <DashboardLayout />
@@ -49,12 +54,12 @@ const App = () => (
                 <Route path="transactions" element={<Transactions />} />
                 <Route path="debts" element={<Debts />} />
                 <Route path="reports" element={<Reports />} />
+                <Route path="profile" element={<Profile />} />
                 <Route
                   path="categories"
                   element={<div className="p-8">Halaman Kategori (Coming Soon)</div>}
                 />
-                <Route
-                  path="goals" element={<Goals />}/>
+                <Route path="goals" element={<Goals />} />
               </Route>
 
               {/* Catch-all */}

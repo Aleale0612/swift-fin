@@ -53,7 +53,7 @@
     --ring: 220 90% 56%;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(220 90% 56%), hsl(260 70% 50%));
+    --gradient-primary: linear-gradient(135deg, hsl(220, 28%, 37%), hsl(260 70% 50%));
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(220 20% 98%));
 
     /* Shadows */
@@ -68,10 +68,10 @@
 
   /* 🌙 Dark Theme */
   .dark {
-    --background: 222 12% 7%;
+    --background: 222 30% 4%; /* Hitam pekat dengan sedikit biru */
     --foreground: 210 40% 96%;
 
-    --card: 222 20% 9%;
+    --card: 222 25% 8%;
     --card-foreground: 210 40% 96%;
     --card-border: 220 25% 15%;
 
@@ -111,8 +111,10 @@
     --input: 222 20% 12%;
     --ring: 186 100% 50%;
 
+    /* Gradients with dark blue */
     --gradient-primary: linear-gradient(135deg, hsl(186 100% 50%), hsl(166 100% 50%));
     --gradient-card: linear-gradient(145deg, hsl(222 20% 9%), hsl(220 25% 11%));
+    --gradient-background: linear-gradient(135deg, hsl(222 30% 4%), hsl(240 50% 8%)); /* Hitam ke biru dongker tipis */
 
     --shadow-glow: 0 0 30px hsl(186 100% 50% / 0.3);
     --shadow-card: 0 4px 24px hsl(222 50% 4% / 0.5);
@@ -130,6 +132,13 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
+  /* Dark theme background gradient */
+  .dark body {
+    background-image: var(--gradient-background);
+    background-attachment: fixed;
+    background-size: cover;
+  }
+
   /* Scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
@@ -144,6 +153,7 @@
     @apply bg-muted-foreground/50;
   }
 }
+
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
@@ -159,4 +169,3 @@
 .animate-pulseGlow {
   animation: pulseGlow 1.5s infinite ease-in-out;
 }
-

@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Shield, TrendingUp } from "lucide-react";
+import { Loader2, Shield, Wallet } from "lucide-react";
 
 const Auth = () => {
   const { user, signUp, signIn, loading } = useAuth();
@@ -25,7 +25,7 @@ const Auth = () => {
 
   // redirect kalau udah login
   if (!loading && user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   // form states dipisah biar lebih aman
@@ -127,14 +127,14 @@ const Auth = () => {
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center space-x-2">
             <div className="h-8 w-8 bg-gradient-to-r from-primary to-accent rounded-lg flex items-center justify-center">
-              <TrendingUp className="h-5 w-5 text-primary-foreground" />
+              <Wallet className="h-5 w-5 text-primary-foreground" />
             </div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Keuanganku.id
+              TrekFi
             </h1>
           </div>
           <p className="text-muted-foreground">
-            Kelola keuangan aman dan nyaman.
+            Manage your money with TrekFi
           </p>
         </div>
 
@@ -143,17 +143,17 @@ const Auth = () => {
           <CardHeader className="space-y-1">
             <div className="flex items-center space-x-2">
               <Shield className="h-5 w-5 text-primary" />
-              <CardTitle>Akses Aman</CardTitle>
+              <CardTitle>Secure Access</CardTitle>
             </div>
             <CardDescription>
-              Masuk ke akun Anda atau buat akun baru
+              Log in to your account or create a new account
             </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="signin" className="space-y-4">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Masuk</TabsTrigger>
-                <TabsTrigger value="signup">Daftar</TabsTrigger>
+                <TabsTrigger value="signin">Log in</TabsTrigger>
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
               </TabsList>
 
               {/* Sign In */}
@@ -206,7 +206,7 @@ const Auth = () => {
               <TabsContent value="signup" className="space-y-4">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="fullName">Nama Lengkap</Label>
+                    <Label htmlFor="fullName">Full Name</Label>
                     <Input
                       id="fullName"
                       name="fullName"
@@ -265,7 +265,7 @@ const Auth = () => {
 
         {/* Security Note */}
         <div className="text-center text-sm text-muted-foreground">
-          <p>🔒 Data Anda dilindungi dengan enkripsi end-to-end</p>
+          <p>🔒 Your data is protected with end-to-end encryption</p>
         </div>
       </div>
     </div>
