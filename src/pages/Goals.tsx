@@ -159,14 +159,14 @@ setLoading(false);
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-display font-bold text-foreground flex items-center gap-2">
-            <Trophy className="h-7 w-7 text-primary" /> Pencapaian & Goals
+            <Trophy className="h-7 w-7 text-primary" /> Goals&needs
           </h1>
           <p className="text-muted-foreground mt-1">
-            Kelola target keuangan Anda dari jangka pendek hingga jangka panjang.
+            Manage your financial targets from short term to long term.
           </p>
         </div>
         <Button onClick={() => setIsOpen(true)} className="bg-gradient-primary shadow-glow">
-          <Plus className="h-4 w-4 mr-2" /> Tambah Pencapaian
+          <Plus className="h-4 w-4 mr-2" /> Added Goals
         </Button>
       </div>
 
@@ -176,7 +176,7 @@ setLoading(false);
       {loading ? (
         <p>Loading...</p>
       ) : goals.length === 0 ? (
-        <p className="text-muted-foreground">Belum ada goals.</p>
+        <p className="text-muted-foreground">There are no goals yet.</p>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {goals.map((goal) => {

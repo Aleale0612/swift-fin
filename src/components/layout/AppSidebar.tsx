@@ -31,11 +31,11 @@ import { supabase } from "@/lib/supabaseClient";
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard, category: "main" },
-  { title: "Transaksi", url: "/transactions", icon: CreditCard, category: "main" },
-  { title: "Utang & Piutang", url: "/debts", icon: PiggyBank, category: "main" },
-  { title: "Laporan", url: "/reports", icon: BarChart3, category: "main" },
-  { title: "Kategori", url: "/categories", icon: Receipt, category: "manage" },
-  { title: "Pencapaian", url: "/goals", icon: TargetIcon, category: "manage" },
+  { title: "Transactions", url: "/transactions", icon: CreditCard, category: "main" },
+  { title: "Debts", url: "/debts", icon: PiggyBank, category: "main" },
+  { title: "Financial statements", url: "/reports", icon: BarChart3, category: "main" },
+  { title: "Category", url: "/categories", icon: Receipt, category: "manage" },
+  { title: "Goals and needs", url: "/goals", icon: TargetIcon, category: "main" },
 ];
 
 export function AppSidebar() {
@@ -136,9 +136,9 @@ export function AppSidebar() {
           {!collapsed && (
             <div className="flex flex-col">
               <h1 className="font-display font-bold text-lg text-sidebar-foreground">
-                Keuanganku
+                FiWallets
               </h1>
-              <p className="text-xs text-muted-foreground">Dezasters</p>
+              <p className="text-xs text-muted-foreground">Not to be confused manage our money</p>
             </div>
           )}
         </div>
@@ -169,11 +169,11 @@ export function AppSidebar() {
             </div>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Saldo Total</span>
+                <span className="text-muted-foreground">Total Balance</span>
                 <span className="font-medium text-card-foreground">{formatCurrency(saldo)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Bulan ini</span>
+                <span className="text-muted-foreground">This Month</span>
                 <span
                   className={cn(
                     "font-medium",
@@ -191,7 +191,7 @@ export function AppSidebar() {
         {/* Main Navigation */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-muted-foreground text-xs font-medium uppercase tracking-wider">
-            {!collapsed ? "Menu Utama" : ""}
+            {!collapsed ? "Primary Menu" : ""}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -219,7 +219,7 @@ export function AppSidebar() {
         {/* Management */}
         <SidebarGroup>
           <SidebarGroupLabel className="text-muted-foreground text-xs font-medium uppercase tracking-wider mt-6">
-            {!collapsed ? "Kelola" : ""}
+            {!collapsed ? "Manage Others" : ""}
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -264,7 +264,7 @@ export function AppSidebar() {
             className="w-full flex items-center gap-3 px-3 py-2 text-sidebar-foreground hover:text-destructive transition-colors duration-200"
           >
             <LogOut className="h-5 w-5" />
-            {!collapsed && <span className="font-medium">Keluar</span>}
+            {!collapsed && <span className="font-medium">Log out of account</span>}
           </button>
         </div>
       </SidebarContent>

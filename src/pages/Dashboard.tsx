@@ -121,10 +121,10 @@ export default function Dashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-display font-bold text-foreground">
-            Dashboard Keuangan
+            Dashboard FiWallets
           </h1>
           <p className="text-muted-foreground mt-1">
-            Selamat datang kembali! Berikut ringkasan keuangan Anda.
+            Welcome back Boss !
           </p>
         </div>
 
@@ -180,9 +180,9 @@ export default function Dashboard() {
         <Card className="lg:col-span-2 bg-card border-card-border">
           <CardHeader>
             <CardTitle className="text-card-foreground">
-              Transaksi Terbaru
+              Newest Transactions
             </CardTitle>
-            <CardDescription>Aktivitas keuangan terkini</CardDescription>
+            <CardDescription>Newest Activity Transactions</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 max-h-64 overflow-y-auto pr-2">
             {recentTransactions.map((transaction) => (
@@ -238,9 +238,9 @@ export default function Dashboard() {
           <CardHeader>
             <CardTitle className="text-card-foreground flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-warning" />
-              Reminder Utang
+             Debts Reminder 
             </CardTitle>
-            <CardDescription>Utang yang akan jatuh tempo</CardDescription>
+            <CardDescription>Debt is due</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 max-h-64 overflow-y-auto pr-2">
             {upcomingDebts.map((debt) => (
@@ -270,7 +270,7 @@ export default function Dashboard() {
                   {formatCurrency(debt.amount)}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Jatuh tempo: {formatDate(debt.due_date)}
+                  Due: {formatDate(debt.due_date)}
                 </p>
               </div>
             ))}

@@ -5,19 +5,25 @@ import { cn } from "@/lib/utils";
 
 const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>
->(({ className, value, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root> & { value?: number }
+>(({ className, value = 0, ...props }, ref) => (
   <ProgressPrimitive.Root
     ref={ref}
-    className={cn("relative h-4 w-full overflow-hidden rounded-full bg-secondary", className)}
+    className={cn(
+      "relative h-4 w-full overflow-hidden rounded-full bg-muted",
+      className
+    )}
     {...props}
   >
     <ProgressPrimitive.Indicator
-  className="h-full w-full flex-1 transition-all bg-gradient-to-r from-blue-500 via-sky-400 to-blue-600 bg-[length:200%_100%] animate-shimmer rounded-full shadow- animate-shimmer animate-pulseGlow[0_0_15px_rgba(56,189,248,0.8)]"
-  style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-/>
-
-
+      className={cn(
+        "h-full transition-all rounded-full shadow-[0_0_15px_rgba(56,189,248,0.8)]",
+        "bg-gradient-to-r from-blue-500 via-sky-400 to-blue-600 animate-shimmer"
+      )}
+      style={{
+        width: `${value}%`,
+      }}
+    />
   </ProgressPrimitive.Root>
 ));
 Progress.displayName = ProgressPrimitive.Root.displayName;
