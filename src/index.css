@@ -144,3 +144,19 @@
     @apply bg-muted-foreground/50;
   }
 }
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(56,189,248,0.6); }
+  50% { box-shadow: 0 0 20px rgba(56,189,248,1); }
+}
+.animate-pulseGlow {
+  animation: pulseGlow 2.5s infinite ease-in-out;
+}
+

@@ -56,24 +56,40 @@ export default function Goals() {
     setTotal(count || 0);
   };
 
-  // Fetch paginated goals
-  const fetchGoals = async () => {
-    if (!userId) return;
-    setLoading(true);
+ // Fetch paginated goals
+const fetchGoals = async () => {
+  if (!userId) return;
+  setLoading(true);
 
-    const from = (page - 1) * pageSize;
-    const to = from + pageSize - 1;
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
 
-    const { data, error } = await supabase
-      .from("goals")
-      .select("*")
-      .eq("user_id", userId)
-      .order("created_at", { ascending: false })
-      .range(from, to);
+  const { data, error } = await supabase
+  .from("goals_ordered")
+  .select("*")
+  .eq("user_id", userId)
+  .range(from, to);
 
-    if (!error) setGoals(data || []);
-    setLoading(false);
+  if (!error && data) {
+  const priority: Record<string, number> = {
+    kebutuhan: 1,
+    darurat: 2,
+    keinginan: 3,
   };
+
+  const ordered = [...data].sort((a, b) => {
+    const categoryDiff =
+      (priority[a.category] || 99) - (priority[b.category] || 99);
+    if (categoryDiff !== 0) return categoryDiff;
+
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
+
+  setGoals(ordered);
+}
+setLoading(false);
+}
+
 
   useEffect(() => {
     fetchCount();
@@ -165,7 +181,8 @@ export default function Goals() {
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {goals.map((goal) => {
             const progressValue =
-              goal.current && goal.target > 0 ? (goal.current / goal.target) * 100 : 0;
+            goal.target > 0 ? Math.min((goal.current / goal.target) * 100, 100) : 0;
+
 
             return (
               <Card key={goal.id} className="bg-card border-card-border relative">
@@ -181,14 +198,14 @@ export default function Goals() {
                   <CardDescription>Target: {formatCurrency(goal.target)}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {/* Progress bar kosong jika belum ada current */}
-                  <Progress
-                    value={progressValue}
-                    className={`mb-2 ${progressValue === 0 ? "bg-muted" : ""}`}
-                  />
-                  <p className="text-sm text-muted-foreground">
-                    {formatCurrency(goal.current)} / {formatCurrency(goal.target)}
-                  </p>
+                  <Progress value={progressValue}
+                  className={`mb-2 h-2 overflow-hidden ${
+                    progressValue > 0 ? "progress-glow-shimmer" : "bg-muted"
+                    }`}/>
+                    <p className="text-sm text-muted-foreground">
+                      {formatCurrency(goal.current)} / {formatCurrency(goal.target)} ({progressValue.toFixed(1)}%)
+                      </p>
+
                   <div className="flex justify-between items-center mt-3">
                     <Badge>{goal.type}-term</Badge>
                     <Badge variant="outline">{goal.category}</Badge>
